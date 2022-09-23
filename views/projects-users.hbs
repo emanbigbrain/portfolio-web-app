@@ -1,4 +1,27 @@
-<section class="sectionContainer">
+<section class="sectionContainerProjects">
   <h2>Projects</h2>
   <p>Here you can find all my project. Have fun browsing!</p>
+  <container class="projectsGrid">
+    {{#if projects.length}}
+      {{#each projects}}
+        <div class="card">
+          <div class="card-image">
+            <img src={{image}} class="img-responsive" />
+          </div>
+          <div class="card-header">
+            <div class="card-title h5">{{name}}</div>
+            <div class="card-subtitle text-gray">{{date}}</div>
+          </div>
+          <div class="card-body">
+            {{description}}
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary">More</button>
+          </div>
+        </div>
+      {{/each}}
+    {{else}}
+      <p>Sorry, but I don't have projects to show for now.</p>
+    {{/if}}
+  </container>
 </section>

@@ -4,28 +4,35 @@ exports.projects = [
     name: "Ancient Greek Philosophy",
     date: "20 May 2022",
     description:
-      "This work was done with a group of talent students at JU for the Visual Communication course. A horizontal scrolling website that talks about Ancient Greek Philosophy in the modern era.",
+      "A horizontal scrolling website that talks about Ancient Greek Philosophy in the modern era.",
+    image:
+      "https://images.unsplash.com/photo-1646332466819-f2a31f127ac7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80",
   },
   {
     id: 1,
     name: "Munchies",
     date: "4 February 2022",
-    description:
-      "This project was done for the User Experience Design course at JU. It is a UX project for a food delivery app with a twist. Munchies includes a unique feature that lets you know about your cravings, and creates a personaly tailored food recommendations list based on your cravings.",
+    description: "A UX project for a food delivery app with a twist.",
+    image:
+      "https://images.unsplash.com/photo-1646332466819-f2a31f127ac7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80",
   },
   {
     id: 2,
     name: "OnSpeed",
     date: "20 February 2022",
     description:
-      "This self-initiated project was done for showcasing purposes presented during the pitch for the Business Planning and Entrepreneurship course. The app, is a same day delivery app, that focuses on sending parcels from one place to another in the same day.",
+      "An app that focuses on sending parcels from one place to another in the same day.",
+    image:
+      "https://images.unsplash.com/photo-1646332466819-f2a31f127ac7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80",
   },
 ];
 
-exports.pets = [
+exports.blog = [
   {
     id: 0,
-    humanId: 1,
-    name: "Catty",
+    title: "Dealing with Creative Mind-Blocks",
+    date: "01 February 2022",
+    description:
+      "If there is anything that most of us struggle with, it's creative mind-blocks. No matter who you are, what field you specialize in or when.",
   },
 ];

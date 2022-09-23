@@ -93,3 +93,18 @@ header {
   margin-bottom: 1em;
   border-radius: 15px;
 }
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2%;
+}
+
+.sectionContainerProjects {
+  margin-right: 5vw;
+}
+
+.card-image {
+  overflow: hidden;
+  height: 200px;
+}
