@@ -1,0 +1,55 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/spectre.css/dist/spectre.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css"
+    />
+    <link rel="stylesheet" href="main.css" />
+    <title>Hello</title>
+  </head>
+  <body>
+    <container class="container">
+      <header class="Header">
+        <div class="topNavFlex">
+          <a class="btn btn-primary" href="/about">About</a>
+          <a class="btn btn-primary" href="/contact">Contact</a>
+        </div>
+      </header>
+      <nav class="Nav">
+        <div class="flexContainer">
+          <img class="logo" src="logo-image.png" alt="logo" />
+        </div>
+        <ul class="nav">
+          <li class="nav-item active">
+            <a href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="projects-users">Projects</a>
+          </li>
+          <li class="nav-item">
+            <a href="blog-users">Blog</a>
+          </li>
+        </ul>
+        <a class="btn">Log in</a>
+      </nav>
+      <main class="Content">
+        {{{body}}}
+
+        <aside class="footer">Created By Emmanuel Lutterodt | Web Development
+          Fundamentals 2022 @ School of Engineering, JU</aside>
+
+      </main>
+    </container>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<h1>Emmanuel's Portfolio</h1>
+<aside><mark>Berlin, Germany</mark>
+
+  <mark>Volleyball Fanatic</mark>
+
+  <mark>WEB & UX Developer</mark></aside>
+<section class="introductionSection">
+  <h2>Hi,</h2>
+  <p>This is my portfolio, and I hope you find something that you might like in
+    here. You can find all my works under the projects sections. If you wish to
+    find some interesting topics that I talk about, or would just like to stay
+    up to date, you can take a look into my blog post section. I cover some
+    interesting topics. Last but not least, if you'd like to leave a nice
+    comment, you can fill in a guestbook entry!<br />Have fun!<br />Emmanuel</p>
+</section>
+{{#if humans.length}}
+  <ul>
+    {{#each humans}}
+      <li>{{name}}</li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No humans exist.</p>
+{{/if}}
