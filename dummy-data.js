@@ -35,4 +35,18 @@ exports.blog = [
     description:
       "If there is anything that most of us struggle with, it's creative mind-blocks. No matter who you are, what field you specialize in or when.",
   },
+  {
+    id: 1,
+    title: "Creative Coding",
+    date: "04 February 2022",
+    description:
+      "I suggest you all to take a look at some creative coding courses. They're great. You learn how to use Javascript in a creative way in order to create visual, as well as create games!",
+  },
+  {
+    id: 2,
+    title: "User Experience Design",
+    date: "20 February 2022",
+    description:
+      "Today I went out of my confort zone and decided to study some User Experience Design. The subject itself is great, and requires some creative capablities.",
+  },
 ];

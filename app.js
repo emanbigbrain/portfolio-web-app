@@ -47,9 +47,9 @@ app.get("/projects-users", function (request, response) {
 
 app.get("/blog-users", function (request, response) {
   const model = {
-    projects: dummyData.blog,
+    blog: dummyData.blog,
   };
-  response.render("blog-users.hbs");
+  response.render("blog-users.hbs", model);
 });
 
 app.get("/login", function (request, response) {
