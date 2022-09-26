@@ -58,8 +58,10 @@ header {
 
 .topNavFlex {
   margin-top: 2vh;
+  margin-bottom: 2vh;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-right: 1rem;
 }
 
@@ -74,7 +76,7 @@ header {
 }
 
 .sectionContainer {
-  margin-top: 5vh;
+  margin-top: 5%;
   padding-right: 25vw;
 }
 
@@ -107,6 +109,7 @@ header {
 }
 
 .sectionContainerProjects {
+  margin-top: 5%;
   margin-right: 5vw;
 }
 
