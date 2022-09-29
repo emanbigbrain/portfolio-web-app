@@ -1,6 +1,9 @@
 <section class="sectionContainer mb-3">
-  <h2>Blog</h2>
-  <p>Ready to stay up to date? Take look through some of my blog posts!</p>
+  <div class="topContainer">
+    <h2>Blog</h2>
+    <p>Ready to stay up to date? Take look through some of my blog posts!</p>
+    <a href="blogpost-form" class="btn btn-primary">Add Blog Post</a>
+  </div>
   {{#if blog.length}}
     {{#each blog}}
       <div class="card mb-2">
@@ -13,6 +16,8 @@
         </div>
         <div class="card-footer">
           <button class="btn btn-primary">Read</button>
+          <button class="btn">Edit</button>
+          <button class="btn warningButton">Delete</button>
         </div>
       </div>
     {{/each}}

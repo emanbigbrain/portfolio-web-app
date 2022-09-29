@@ -3,6 +3,7 @@
   --dark-grey: #a7a7a7;
   --background-color: #fbfbfb;
   --white: #ffffff;
+  --warning-color: #e34242;
 }
 
 body {
@@ -125,4 +126,21 @@ header {
 .loginButton {
   position: absolute;
   bottom: 5%;
+}
+
+.tile-title {
+  margin-bottom: 0;
+}
+
+.tile {
+  margin-bottom: 20px;
+}
+
+.topContainer {
+  margin-bottom: 50px;
+}
+
+.warningButton {
+  color: var(--warning-color);
+  border-color: var(--warning-color);
 }

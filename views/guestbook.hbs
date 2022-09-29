@@ -1,0 +1,26 @@
+<section class="sectionContainer mb-3">
+  <div class="topContainer">
+    <h2>Guestbook</h2>
+    <p>Wanna leave a nice remark? Write a comment here!</p>
+    <a href="guestbook-form" class="btn btn-primary">Write comment</a>
+  </div>
+  {{#if guestbook.length}}
+    {{#each guestbook}}
+      <div class="tile">
+        <div class="tile-icon">
+          <div class="example-tile-icon">
+            <i class="icon icon-file centered"></i>
+          </div>
+        </div>
+        <div class="tile-content">
+          <p class="tile-title"><strong>{{name}}</strong></p>
+          <p class="tile-subtitle">{{comment}}</p>
+        </div>
+        <div class="tile-action">
+          <button class="btn btn-primary">Edit</button>
+          <button class="btn warningButton">Delete</button>
+        </div>
+      </div>
+    {{/each}}
+  {{/if}}
+</section>

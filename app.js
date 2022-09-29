@@ -52,6 +52,21 @@ app.get("/blog-users", function (request, response) {
   response.render("blog-users.hbs", model);
 });
 
+app.get("/guestbook", function (request, response) {
+  const model = {
+    guestbook: dummyData.guestbook,
+  };
+  response.render("guestbook.hbs", model);
+});
+
+app.get("/guestbook-form", function (request, response) {
+  response.render("guestbook-form.hbs");
+});
+
+app.get("/blogpost-form", function (request, response) {
+  response.render("blogpost-form.hbs");
+});
+
 app.get("/login", function (request, response) {
   response.render("login.hbs");
 });

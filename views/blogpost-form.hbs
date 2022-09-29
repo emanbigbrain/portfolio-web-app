@@ -1,0 +1,22 @@
+<section class="sectionContainer">
+  <h2>Create Blog Post</h2>
+  <form action="/guestbook-form" method="GET">
+    <label class="form-label" for="input-name">Title</label>
+    <input
+      class="form-input"
+      type="text"
+      id="input-name"
+      placeholder="Blog title here"
+    />
+    <label class="form-label" for="input-date">Date</label>
+    <input class="form-input" type="date" id="input-date">
+    <label class="form-label" for="input-text">Blog Post Text</label>
+    <textarea
+      class="form-input mb-2"
+      id="input-text"
+      placeholder="Start writing here."
+      rows="10"
+    /></textarea>
+    <input class="btn btn-primary" type="submit" value="Submit">
+  </form>
+</section>

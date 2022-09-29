@@ -50,3 +50,23 @@ exports.blog = [
       "Today I went out of my confort zone and decided to study some User Experience Design. The subject itself is great, and requires some creative capablities.",
   },
 ];
+
+exports.guestbook = [
+  {
+    id: 0,
+    name: "Michael",
+    comment: "Nice work Emmanuel. Keep up the good work!",
+  },
+  {
+    id: 1,
+    name: "Joe Harden",
+    comment:
+      "I like your work a lot, and your blog keeps me up to date with all you works.",
+  },
+  {
+    id: 2,
+    name: "Timmy",
+    comment:
+      "Not bad, just wok on your UX Design a bit more and you'll be a professional.",
+  },
+];
