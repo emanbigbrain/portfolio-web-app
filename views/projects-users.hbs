@@ -1,6 +1,9 @@
 <section class="sectionContainerProjects">
-  <h2>Projects</h2>
-  <p>Here you can find all my project. Have fun browsing!</p>
+  <div class="topContainer">
+    <h2>Projects</h2>
+    <p>Here you can find all my project. Have fun browsing!</p>
+    <a href="projects-form" class="btn btn-primary">Create New Project</a>
+  </div>
   <container class="projectsGrid">
     {{#if projects.length}}
       {{#each projects}}
@@ -17,6 +20,8 @@
           </div>
           <div class="card-footer">
             <button class="btn btn-primary">More</button>
+            <button class="btn">Edit</button>
+            <button class="btn warningButton">Delete</button>
           </div>
         </div>
       {{/each}}

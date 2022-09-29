@@ -67,6 +67,10 @@ app.get("/blogpost-form", function (request, response) {
   response.render("blogpost-form.hbs");
 });
 
+app.get("/projects-form", function (request, response) {
+  response.render("projects-form.hbs");
+});
+
 app.get("/login", function (request, response) {
   response.render("login.hbs");
 });
