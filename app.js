@@ -2,6 +2,7 @@ const dummyData = require("./dummy-data");
 const express = require("express");
 const expressHandlebars = require("express-handlebars");
 const expressSession = require("express-session");
+const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3");
 
 const ADMIN_USERNAME = "Emmanuel";
@@ -17,6 +18,12 @@ app.engine(
 );
 
 app.use(express.static("./public"));
+
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+  })
+);
 
 app.use(
   expressSession({
@@ -88,12 +95,67 @@ app.get("/guestbook-form", function (request, response) {
   response.render("guestbook-form.hbs");
 });
 
+app.post("/guestbook-form", function (request, response) {
+  const name = request.body.name;
+  const comment = request.body.comment;
+
+  const guestbookEntry = {
+    name,
+    comment,
+    id: dummyData.guestbook.length + 1,
+  };
+
+  dummyData.guestbook.push(guestbookEntry);
+
+  response.redirect("/guestbook/");
+});
+
 app.get("/blogpost-form", function (request, response) {
   response.render("blogpost-form.hbs");
 });
 
+app.post("/blogpost-form", function (request, response) {
+  const title = request.body.title;
+  const date = request.body.date;
+  const description = request.body.description;
+  const content = request.body.content;
+
+  const blogpost = {
+    title,
+    date,
+    description,
+    content,
+    id: dummyData.blog.length + 1,
+  };
+
+  dummyData.blog.push(blogpost);
+
+  response.redirect("/blog-users/" + blogpost.id);
+});
+
 app.get("/projects-form", function (request, response) {
   response.render("projects-form.hbs");
+});
+
+app.post("/projects-form", function (request, response) {
+  const name = request.body.name;
+  const date = request.body.date;
+  const content = request.body.content;
+  const description = request.body.description;
+  const image = request.body.image;
+
+  const project = {
+    name,
+    date,
+    content,
+    description,
+    image,
+    id: dummyData.projects.length + 1,
+  };
+
+  dummyData.projects.push(project);
+
+  response.redirect("/projects-users/" + project.id);
 });
 
 app.get("/login", function (request, response) {
