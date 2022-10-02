@@ -42,7 +42,20 @@ app.get("/projects-users", function (request, response) {
   const model = {
     projects: dummyData.projects,
   };
+
   response.render("projects-users.hbs", model);
+});
+
+app.get("/projects-users/:id", function (request, response) {
+  const id = request.params.id;
+
+  const project = dummyData.projects.find((h) => h.id == id);
+
+  const model = {
+    project: project,
+  };
+
+  response.render("project.hbs", model);
 });
 
 app.get("/blog-users", function (request, response) {
@@ -50,6 +63,18 @@ app.get("/blog-users", function (request, response) {
     blog: dummyData.blog,
   };
   response.render("blog-users.hbs", model);
+});
+
+app.get("/blog-users/:id", function (request, response) {
+  const id = request.params.id;
+
+  const blogpost = dummyData.blog.find((m) => m.id == id);
+
+  const model = {
+    blogpost: blogpost,
+  };
+
+  response.render("blogpost.hbs", model);
 });
 
 app.get("/guestbook", function (request, response) {

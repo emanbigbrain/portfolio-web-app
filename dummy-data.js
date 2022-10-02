@@ -3,6 +3,8 @@ exports.projects = [
     id: 0,
     name: "Ancient Greek Philosophy",
     date: "20 May 2022",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     description:
       "A horizontal scrolling website that talks about Ancient Greek Philosophy in the modern era.",
     image:
@@ -34,6 +36,8 @@ exports.blog = [
     date: "01 February 2022",
     description:
       "If there is anything that most of us struggle with, it's creative mind-blocks. No matter who you are, what field you specialize in or when.",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     id: 1,

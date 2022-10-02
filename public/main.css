@@ -144,3 +144,9 @@ header {
   color: var(--warning-color);
   border-color: var(--warning-color);
 }
+
+.imageContainer {
+  height: 400px;
+  width: 1000px;
+  overflow: hidden;
+}
