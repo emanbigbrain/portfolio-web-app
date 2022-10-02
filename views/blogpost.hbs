@@ -1,4 +1,7 @@
 <section class="sectionContainer">
+  <form action="/delete-blogpost/{{blog.id}}" method="POST">
+    <input class="btn warningButton" type="submit" value="Delete" />
+  </form>
   <h2>{{blogpost.title}}</h2>
   <aside class="mb-2"><strong>{{blogpost.date}}</strong></aside>
   <p>{{blogpost.content}}</p>

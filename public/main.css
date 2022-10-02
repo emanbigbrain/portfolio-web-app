@@ -150,3 +150,7 @@ header {
   width: 1000px;
   overflow: hidden;
 }
+
+.flex-buttons {
+  display: flex;
+}

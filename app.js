@@ -110,6 +110,16 @@ app.post("/guestbook-form", function (request, response) {
   response.redirect("/guestbook/");
 });
 
+app.post("/delete-guestbookEntry", function (request, response) {
+  const id = request.params.id;
+
+  const guestbookIndex = dummyData.guestbook.findIndex((h) => h.id == id);
+
+  dummyData.guestbook.splice(guestbookIndex, 1);
+
+  response.redirect("/guestbook");
+});
+
 app.get("/blogpost-form", function (request, response) {
   response.render("blogpost-form.hbs");
 });
@@ -131,6 +141,16 @@ app.post("/blogpost-form", function (request, response) {
   dummyData.blog.push(blogpost);
 
   response.redirect("/blog-users/" + blogpost.id);
+});
+
+app.post("/delete-blogpost", function (request, response) {
+  const id = request.params.id;
+
+  const blogIndex = dummyData.blog.findIndex((h) => h.id == id);
+
+  dummyData.blog.splice(blogIndex, 1);
+
+  response.redirect("/blog-users");
 });
 
 app.get("/projects-form", function (request, response) {
@@ -156,6 +176,16 @@ app.post("/projects-form", function (request, response) {
   dummyData.projects.push(project);
 
   response.redirect("/projects-users/" + project.id);
+});
+
+app.post("/delete-projects", function (request, response) {
+  const id = request.params.id;
+
+  const projectsIndex = dummyData.projects.findIndex((h) => h.id == id);
+
+  dummyData.projects.splice(projectsIndex, 1);
+
+  response.redirect("/projects-users");
 });
 
 app.get("/login", function (request, response) {

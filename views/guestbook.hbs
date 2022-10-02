@@ -16,9 +16,11 @@
           <p class="tile-title"><strong>{{name}}</strong></p>
           <p class="tile-subtitle">{{comment}}</p>
         </div>
-        <div class="tile-action">
-          <button class="btn btn-primary">Edit</button>
-          <button class="btn warningButton">Delete</button>
+        <div class="tile-action flex-buttons">
+          <button class="btn btn-primary mr-2">Edit</button>
+          <form action="/delete-guestbookEntry" method="POST">
+            <input class="btn warningButton" type="submit" value="Delete" />
+          </form>
         </div>
       </div>
     {{/each}}
