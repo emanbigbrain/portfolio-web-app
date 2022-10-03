@@ -110,6 +110,31 @@ app.post("/guestbook-form", function (request, response) {
   response.redirect("/guestbook/");
 });
 
+app.get("/update-guestbook/:id", function (request, response) {
+  const id = request.params.id;
+
+  const guestbookEntry = dummyData.guestbook.find((h) => h.id == id);
+
+  const model = {
+    guestbookEntry,
+  };
+
+  response.render("update-guestbook.hbs", model);
+});
+
+app.post("/update-guestbook/:id", function (request, response) {
+  const id = request.params.id;
+  const newName = request.body.name;
+  const newComment = request.body.comment;
+
+  const guestbookEntry = dummyData.guestbook.find((h) => h.id == id);
+
+  guestbookEntry.name = newName;
+  guestbookEntry.comment = newComment;
+
+  response.redirect("/update-guestbook/" + id);
+});
+
 app.post("/delete-guestbookEntry", function (request, response) {
   const id = request.params.id;
 
@@ -119,6 +144,8 @@ app.post("/delete-guestbookEntry", function (request, response) {
 
   response.redirect("/guestbook");
 });
+
+//watch minute 57
 
 app.get("/blogpost-form", function (request, response) {
   response.render("blogpost-form.hbs");
@@ -141,6 +168,35 @@ app.post("/blogpost-form", function (request, response) {
   dummyData.blog.push(blogpost);
 
   response.redirect("/blog-users/" + blogpost.id);
+});
+
+app.get("/update-blogpost/:id", function (request, response) {
+  const id = request.params.id;
+
+  const blogpost = dummyData.blog.find((h) => h.id == id);
+
+  const model = {
+    blogpost,
+  };
+
+  response.render("update-blogpost.hbs", model);
+});
+
+app.post("/update-blogpost/:id", function (request, response) {
+  const id = request.params.id;
+  const newTitle = request.body.title;
+  const newDate = request.body.date;
+  const newContent = request.body.content;
+  const newDescription = request.body.description;
+
+  const blogpost = dummyData.blog.find((h) => h.id == id);
+
+  blogpost.title = newTitle;
+  blogpost.date = newDate;
+  blogpost.content = newContent;
+  blogpost.description = newDescription;
+
+  response.redirect("/update-blogpost/" + id);
 });
 
 app.post("/delete-blogpost", function (request, response) {
@@ -176,6 +232,37 @@ app.post("/projects-form", function (request, response) {
   dummyData.projects.push(project);
 
   response.redirect("/projects-users/" + project.id);
+});
+
+app.get("/update-project/:id", function (request, response) {
+  const id = request.params.id;
+
+  const project = dummyData.projects.find((h) => h.id == id);
+
+  const model = {
+    project,
+  };
+
+  response.render("update-project.hbs", model);
+});
+
+app.post("/update-project/:id", function (request, response) {
+  const id = request.params.id;
+  const newName = request.body.name;
+  const newDate = request.body.date;
+  const newContent = request.body.content;
+  const newDescription = request.body.description;
+  const newImage = request.body.image;
+
+  const project = dummyData.projects.find((h) => h.id == id);
+
+  project.name = newName;
+  project.date = newDate;
+  project.content = newContent;
+  project.description = newDescription;
+  project.image = newImage;
+
+  response.redirect("/update-project/" + id);
 });
 
 app.post("/delete-projects", function (request, response) {

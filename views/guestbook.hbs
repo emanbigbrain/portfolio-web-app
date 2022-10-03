@@ -2,7 +2,7 @@
   <div class="topContainer">
     <h2>Guestbook</h2>
     <p>Wanna leave a nice remark? Write a comment here!</p>
-    <a href="guestbook-form" class="btn btn-primary">Write comment</a>
+    <a href="/guestbook-form" class="btn btn-primary">Write comment</a>
   </div>
   {{#if guestbook.length}}
     {{#each guestbook}}
@@ -17,7 +17,7 @@
           <p class="tile-subtitle">{{comment}}</p>
         </div>
         <div class="tile-action flex-buttons">
-          <button class="btn btn-primary mr-2">Edit</button>
+          <a href="/update-guestbook/{{id}}" class="btn btn-primary">Update</a>
           <form action="/delete-guestbookEntry" method="POST">
             <input class="btn warningButton" type="submit" value="Delete" />
           </form>

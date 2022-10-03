@@ -1,0 +1,36 @@
+<section class="sectionContainer">
+  <h2>Update Projects</h2>
+  <form method="POST">
+    <label class="form-label" for="input-name">Name of the project</label>
+    <input
+      class="form-input"
+      type="text"
+      id="input-name"
+      placeholder="Blog title here"
+      name="name"
+      value="{{project.name}}"
+    />
+    <label class="form-label" for="input-date">Date</label>
+    <input class="form-input" type="date" id="input-date" name="date" value="{{project.date}}">
+    <label class="form-label" for="input-information">Information about the project</label>
+    <textarea
+      class="form-input mb-2"
+      id="input-information"
+      placeholder="Start writing here."
+      rows="10"
+      name="content"
+      
+    />{{project.content}}</textarea>
+    <label class="form-label" for="input-description">Short description</label>
+    <textarea
+      class="form-input mb-2"
+      id="input-description"
+      placeholder="Short Description here."
+      rows="4"
+      name="description"
+    />{{project.description}}</textarea>
+    <label class="form-label" for="input-imageurl">Image URL</label>
+    <input class="form-input" type="text" id="input-imageurl" placeholder="Insert image URL here" name="image" value="{{project.image}}">
+    <input class="btn btn-primary" type="submit" value="Update">
+  </form>
+</section>
