@@ -4,8 +4,8 @@
     <p>Ready to stay up to date? Take look through some of my blog posts!</p>
     <a href="blogpost-form" class="btn btn-primary">Add Blog Post</a>
   </div>
-  {{#if blog.length}}
-    {{#each blog}}
+  {{#if blogposts.length}}
+    {{#each blogposts}}
       <div class="card mb-2">
         <div class="card-header">
           <div class="card-title h5">{{title}}</div>
@@ -21,5 +21,7 @@
         </div>
       </div>
     {{/each}}
+  {{else}}
+    <p>Sorry, but I don't have blog posts to show for now.</p>
   {{/if}}
 </section>

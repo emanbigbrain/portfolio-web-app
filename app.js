@@ -23,6 +23,24 @@ db.run(`
   )
 `);
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS blogposts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT,
+      date TEXT,
+      description TEXT,
+      content TEXT
+    )
+`);
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS guestbookEntries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT,
+      comment TEXT
+    )
+`);
+
 const app = express();
 
 //Middlewares
@@ -82,9 +100,9 @@ app.get("/projects-users/:id", function (request, response) {
   const query = `SELECT * FROM projects WHERE id = ?`;
   const values = [id];
 
-  db.get(query, values, function (error, project) {
+  db.get(query, values, function (error, projects) {
     const model = {
-      project,
+      projects,
     };
 
     response.render("project.hbs", model);
@@ -92,29 +110,42 @@ app.get("/projects-users/:id", function (request, response) {
 });
 
 app.get("/blog-users", function (request, response) {
-  const model = {
-    blog: dummyData.blog,
-  };
-  response.render("blog-users.hbs", model);
+  const query = `SELECT  * FROM blogposts`;
+
+  db.all(query, function (error, blogposts) {
+    const model = {
+      blogposts,
+    };
+
+    response.render("blog-users.hbs", model);
+  });
 });
 
 app.get("/blog-users/:id", function (request, response) {
   const id = request.params.id;
 
-  const blogpost = dummyData.blog.find((m) => m.id == id);
+  const query = `SELECT * FROM blogposts WHERE id = ?`;
+  const values = [id];
 
-  const model = {
-    blogpost: blogpost,
-  };
+  db.get(query, values, function (error, blogposts) {
+    const model = {
+      blogposts,
+    };
 
-  response.render("blogpost.hbs", model);
+    response.render("blogpost.hbs", model);
+  });
 });
 
 app.get("/guestbook", function (request, response) {
-  const model = {
-    guestbook: dummyData.guestbook,
-  };
-  response.render("guestbook.hbs", model);
+  const query = `SELECT  * FROM guestbookEntries`;
+
+  db.all(query, function (error, guestbookEntries) {
+    const model = {
+      guestbookEntries,
+    };
+
+    response.render("guestbook.hbs", model);
+  });
 });
 
 app.get("/guestbook-form", function (request, response) {
@@ -124,6 +155,13 @@ app.get("/guestbook-form", function (request, response) {
 app.post("/guestbook-form", function (request, response) {
   const name = request.body.name;
   const comment = request.body.comment;
+
+  const query = `INSERT INTO guestbookEntries (name, comment) VALUES (?, ?)`;
+  const values = [name, date, description, content];
+
+  db.run(query, values, function (error) {
+    response.redirect("/blog-users");
+  });
 
   const guestbookEntry = {
     name,
@@ -171,8 +209,6 @@ app.post("/delete-guestbookEntry", function (request, response) {
   response.redirect("/guestbook");
 });
 
-//watch minute 57
-
 app.get("/blogpost-form", function (request, response) {
   response.render("blogpost-form.hbs");
 });
@@ -183,29 +219,27 @@ app.post("/blogpost-form", function (request, response) {
   const description = request.body.description;
   const content = request.body.content;
 
-  const blogpost = {
-    title,
-    date,
-    description,
-    content,
-    id: dummyData.blog.length + 1,
-  };
+  const query = `INSERT INTO blogposts (title, date, description, content) VALUES (?, ?, ?, ?)`;
+  const values = [title, date, description, content];
 
-  dummyData.blog.push(blogpost);
-
-  response.redirect("/blog-users/" + blogpost.id);
+  db.run(query, values, function (error) {
+    response.redirect("/blog-users");
+  });
 });
 
 app.get("/update-blogpost/:id", function (request, response) {
   const id = request.params.id;
 
-  const blogpost = dummyData.blog.find((h) => h.id == id);
+  const query = `SELECT * FROM blogposts WHERE id = ?`;
+  const values = [id];
 
-  const model = {
-    blogpost,
-  };
+  db.get(query, values, function (error, blogposts) {
+    const model = {
+      blogposts,
+    };
 
-  response.render("update-blogpost.hbs", model);
+    response.render("update-blogpost.hbs", model);
+  });
 });
 
 app.post("/update-blogpost/:id", function (request, response) {
@@ -215,24 +249,23 @@ app.post("/update-blogpost/:id", function (request, response) {
   const newContent = request.body.content;
   const newDescription = request.body.description;
 
-  const blogpost = dummyData.blog.find((h) => h.id == id);
+  const query = `UPDATE blogposts SET title = ?, date = ?, description = ?, content = ? WHERE id = ?`;
+  const values = [newTitle, newDate, newDescription, newContent, id];
 
-  blogpost.title = newTitle;
-  blogpost.date = newDate;
-  blogpost.content = newContent;
-  blogpost.description = newDescription;
-
-  response.redirect("/update-blogpost/" + id);
+  db.run(query, values, function (error) {
+    response.redirect("/update-blogpost/" + id);
+  });
 });
 
-app.post("/delete-blogpost", function (request, response) {
+app.post("/delete-blogpost/:id", function (request, response) {
   const id = request.params.id;
 
-  const blogIndex = dummyData.blog.findIndex((h) => h.id == id);
+  const query = `DELETE FROM blogposts WHERE id = ?`;
+  const values = [id];
 
-  dummyData.blog.splice(blogIndex, 1);
-
-  response.redirect("/blog-users");
+  db.run(query, values, function (error) {
+    response.redirect("/blog-users");
+  });
 });
 
 app.get("/projects-form", function (request, response) {
@@ -257,13 +290,16 @@ app.post("/projects-form", function (request, response) {
 app.get("/update-project/:id", function (request, response) {
   const id = request.params.id;
 
-  const project = dummyData.projects.find((h) => h.id == id);
+  const query = `SELECT * FROM projects WHERE id = ?`;
+  const values = [id];
 
-  const model = {
-    project,
-  };
+  db.get(query, values, function (error, project) {
+    const model = {
+      project,
+    };
 
-  response.render("update-project.hbs", model);
+    response.render("update-project.hbs", model);
+  });
 });
 
 app.post("/update-project/:id", function (request, response) {
@@ -274,25 +310,23 @@ app.post("/update-project/:id", function (request, response) {
   const newDescription = request.body.description;
   const newImage = request.body.image;
 
-  const project = dummyData.projects.find((h) => h.id == id);
+  const query = `UPDATE projects SET name = ?, date = ?, content = ?, description = ?, image = ? WHERE id = ?`;
+  const values = [newName, newDate, newContent, newDescription, newImage, id];
 
-  project.name = newName;
-  project.date = newDate;
-  project.content = newContent;
-  project.description = newDescription;
-  project.image = newImage;
-
-  response.redirect("/update-project/" + id);
+  db.run(query, values, function (error) {
+    response.redirect("/update-project/" + id);
+  });
 });
 
-app.post("/delete-projects", function (request, response) {
+app.post("/delete-projects/:id", function (request, response) {
   const id = request.params.id;
 
-  const projectsIndex = dummyData.projects.findIndex((h) => h.id == id);
+  const query = `DELETE FROM projects WHERE id = ?`;
+  const values = [id];
 
-  dummyData.projects.splice(projectsIndex, 1);
-
-  response.redirect("/projects-users");
+  db.run(query, values, function (error) {
+    response.redirect("/projects-users");
+  });
 });
 
 app.get("/login", function (request, response) {

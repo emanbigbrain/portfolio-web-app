@@ -2,11 +2,11 @@
   <form action="/delete-projects/{{projects.id}}" method="POST">
     <input class="btn warningButton" type="submit" value="Delete" />
   </form>
-  <a href="/update-project/{{project.id}}" class="btn btn-primary">Update</a>
-  <h2>{{project.name}}</h2>
+  <a href="/update-project/{{projects.id}}" class="btn btn-primary">Update</a>
+  <h2>{{projects.name}}</h2>
   <div class="imageContainer mb-2">
-    <img src={{project.image}} alt="picture of lake" />
+    <img src={{projects.image}} alt="picture of lake" />
   </div>
-  <aside class="mb-2"><strong>{{project.date}}</strong></aside>
-  <p>{{project.content}}</p>
+  <aside class="mb-2"><strong>{{projects.date}}</strong></aside>
+  <p>{{projects.content}}</p>
 </section>

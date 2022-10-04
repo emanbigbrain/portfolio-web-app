@@ -8,10 +8,10 @@
       id="input-name"
       placeholder="Blog title here"
       name="title"
-      value="{{blogpost.title}}"
+      value="{{blogposts.title}}"
     />
     <label class="form-label" for="input-date">Date</label>
-    <input class="form-input" type="date" id="input-date" name="date" value="{{blogpost.date}}">
+    <input class="form-input" type="date" id="input-date" name="date" value="{{blogposts.date}}">
     <label class="form-label" for="input-text">Blog Post Text</label>
     <textarea
       class="form-input mb-2"
@@ -19,7 +19,7 @@
       placeholder="Start writing here."
       rows="10"
       name="content"
-    />{{blogpost.content}}</textarea>
+    />{{blogposts.content}}</textarea>
     <label class="form-label" for="input-description">Short description</label>
     <textarea
       class="form-input mb-2"
@@ -27,7 +27,7 @@
       placeholder="Start writing here."
       rows="3"
       name="description"
-    />{{blogpost.description}}</textarea>
+    />{{blogposts.description}}</textarea>
     <input class="btn btn-primary" type="submit" value="Update">
   </form>
 </section>
