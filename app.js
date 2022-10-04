@@ -37,7 +37,8 @@ db.run(`
     CREATE TABLE IF NOT EXISTS guestbookEntries (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
-      comment TEXT
+      comment TEXT,
+      currentDateStamp TEXT
     )
 `);
 
