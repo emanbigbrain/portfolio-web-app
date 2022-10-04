@@ -1,8 +1,10 @@
 <section class="sectionContainer mb-2">
-  <form action="/delete-projects/{{projects.id}}" method="POST">
-    <input class="btn warningButton" type="submit" value="Delete" />
-  </form>
-  <a href="/update-project/{{projects.id}}" class="btn btn-primary">Update</a>
+  <div class="flex-buttons">
+    <form class="mr-2" action="/delete-projects/{{projects.id}}" method="POST">
+      <input class="btn warningButton" type="submit" value="Delete" />
+    </form>
+    <a href="/update-project/{{projects.id}}" class="btn btn-primary">Update</a>
+  </div>
   <h2>{{projects.name}}</h2>
   <div class="imageContainer mb-2">
     <img src={{projects.image}} alt="picture of lake" />

@@ -1,8 +1,13 @@
 <section class="sectionContainer">
-  <form action="/delete-blogpost/{{blogposts.id}}" method="POST">
-    <input class="btn warningButton" type="submit" value="Delete" />
-  </form>
-  <a href="/update-blogpost/{{blogposts.id}}" class="btn btn-primary">Update</a>
+  <div class="flex-buttons">
+    <form class="mr-2" action="/delete-blogpost/{{blogposts.id}}" method="POST">
+      <input class="btn warningButton" type="submit" value="Delete" />
+    </form>
+    <a
+      href="/update-blogpost/{{blogposts.id}}"
+      class="btn btn-primary"
+    >Update</a>
+  </div>
   <h2>{{blogposts.title}}</h2>
   <aside class="mb-2"><strong>{{blogposts.date}}</strong></aside>
   <p>{{blogposts.content}}</p>

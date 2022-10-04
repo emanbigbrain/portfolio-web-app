@@ -1,6 +1,6 @@
 <section class="sectionContainer">
   <h2>Update Your Guestbook Entry</h2>
-  <form action="/update-guestbook/{{guestbookEntry.id}}" method="POST">
+  <form action="/update-guestbook/{{guestbookEntries.id}}" method="POST">
     <label class="form-label" for="input-name">Name</label>
     <input
       class="form-input"
@@ -8,7 +8,7 @@
       id="input-name"
       placeholder="Your name"
       name="name"
-      value="{{guestbookEntry.name}}"
+      value="{{guestbookEntries.name}}"
     />
     <label class="form-label" for="input-comment">Comment</label>
     <textarea
@@ -16,7 +16,7 @@
       id="input-name"
       placeholder="Write a comment here"
       name="comment"
-    />{{guestbookEntry.comment}}</textarea>
+    />{{guestbookEntries.comment}}</textarea>
     <input class="btn btn-primary" type="submit" value="Update">
   </form>
 </section>

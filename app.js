@@ -156,34 +156,27 @@ app.post("/guestbook-form", function (request, response) {
   const name = request.body.name;
   const comment = request.body.comment;
 
-  const query = `INSERT INTO guestbookEntries (name, comment) VALUES (?, ?)`;
-  const values = [name, date, description, content];
+  const query = `INSERT INTO guestbookEntries (name, comment, currentDateStamp) VALUES (?, ?, date())`;
+  const values = [name, comment];
 
   db.run(query, values, function (error) {
-    response.redirect("/blog-users");
+    response.redirect("/guestbook");
   });
-
-  const guestbookEntry = {
-    name,
-    comment,
-    id: dummyData.guestbook.length + 1,
-  };
-
-  dummyData.guestbook.push(guestbookEntry);
-
-  response.redirect("/guestbook/");
 });
 
 app.get("/update-guestbook/:id", function (request, response) {
   const id = request.params.id;
 
-  const guestbookEntry = dummyData.guestbook.find((h) => h.id == id);
+  const query = `SELECT * FROM guestbookEntries WHERE id = ?`;
+  const values = [id];
 
-  const model = {
-    guestbookEntry,
-  };
+  db.get(query, values, function (error, guestbookEntries) {
+    const model = {
+      guestbookEntries,
+    };
 
-  response.render("update-guestbook.hbs", model);
+    response.render("update-guestbook.hbs", model);
+  });
 });
 
 app.post("/update-guestbook/:id", function (request, response) {
@@ -191,22 +184,23 @@ app.post("/update-guestbook/:id", function (request, response) {
   const newName = request.body.name;
   const newComment = request.body.comment;
 
-  const guestbookEntry = dummyData.guestbook.find((h) => h.id == id);
+  const query = `UPDATE guestbookEntries SET name = ?, comment = ?, currentDateStamp = date() WHERE id = ?`;
+  const values = [newName, newComment, id];
 
-  guestbookEntry.name = newName;
-  guestbookEntry.comment = newComment;
-
-  response.redirect("/update-guestbook/" + id);
+  db.run(query, values, function (error) {
+    response.redirect("/update-guestbook/" + id);
+  });
 });
 
-app.post("/delete-guestbookEntry", function (request, response) {
+app.post("/delete-guestbookEntry/:id", function (request, response) {
   const id = request.params.id;
 
-  const guestbookIndex = dummyData.guestbook.findIndex((h) => h.id == id);
+  const query = `DELETE FROM guestbookEntries WHERE id = ?`;
+  const values = [id];
 
-  dummyData.guestbook.splice(guestbookIndex, 1);
-
-  response.redirect("/guestbook");
+  db.run(query, values, function (error) {
+    response.redirect("/guestbook");
+  });
 });
 
 app.get("/blogpost-form", function (request, response) {
