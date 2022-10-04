@@ -8,7 +8,24 @@ const sqlite3 = require("sqlite3");
 const ADMIN_USERNAME = "Emmanuel";
 const ADMIN_PASSWORD = "mypassword";
 
+//Database
+
+const db = new sqlite3.Database("portfolio-database.db");
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS projects (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    date TEXT,
+    content TEXT,
+    description TEXT,
+    image TEXT
+  )
+`);
+
 const app = express();
+
+//Middlewares
 
 app.engine(
   "hbs",
@@ -33,6 +50,8 @@ app.use(
   })
 );
 
+//Request and Response
+
 app.get("/", function (request, response) {
   response.render("homepage.hbs");
 });
@@ -46,23 +65,30 @@ app.get("/contact", function (request, response) {
 });
 
 app.get("/projects-users", function (request, response) {
-  const model = {
-    projects: dummyData.projects,
-  };
+  const query = `SELECT  * FROM projects`;
 
-  response.render("projects-users.hbs", model);
+  db.all(query, function (error, projects) {
+    const model = {
+      projects,
+    };
+
+    response.render("projects-users.hbs", model);
+  });
 });
 
 app.get("/projects-users/:id", function (request, response) {
   const id = request.params.id;
 
-  const project = dummyData.projects.find((h) => h.id == id);
+  const query = `SELECT * FROM projects WHERE id = ?`;
+  const values = [id];
 
-  const model = {
-    project: project,
-  };
+  db.get(query, values, function (error, project) {
+    const model = {
+      project,
+    };
 
-  response.render("project.hbs", model);
+    response.render("project.hbs", model);
+  });
 });
 
 app.get("/blog-users", function (request, response) {
@@ -220,18 +246,12 @@ app.post("/projects-form", function (request, response) {
   const description = request.body.description;
   const image = request.body.image;
 
-  const project = {
-    name,
-    date,
-    content,
-    description,
-    image,
-    id: dummyData.projects.length + 1,
-  };
+  const query = `INSERT INTO projects (name, date, content, description, image) VALUES (?, ?, ?, ?, ?)`;
+  const values = [name, date, content, description, image];
 
-  dummyData.projects.push(project);
-
-  response.redirect("/projects-users/" + project.id);
+  db.run(query, values, function (error) {
+    response.redirect("/projects-users");
+  });
 });
 
 app.get("/update-project/:id", function (request, response) {
