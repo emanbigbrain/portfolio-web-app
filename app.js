@@ -4,6 +4,26 @@ const expressSession = require("express-session");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3");
 
+const MIN_NAME_LENGTH = 2;
+const MIN_COMMENT_LENGTH = 4;
+const MAX_COMMENT_LENGTH = 50;
+const MAX_NAME_LENGTH = 20;
+
+const MIN_DATE_LENGTH = 7;
+
+const MIN_TITLE_LENGTH = 4;
+const MAX_TITLE_LENGTH = 20;
+const MIN_DESCRIPTION_LENGTH = 10;
+const MAX_DESCRIPTION_LENGTH = 30;
+const MIN_CONTENT_LENGTH = 100;
+
+const MIN_PROJECT_TITLE_LENGTH = 4;
+const MAX_PROJECT_TITLE_LENGTH = 20;
+const MIN_PROJECT_DESCRIPTION_LENGTH = 10;
+const MAX_PROJECT_DESCRIPTION_LENGTH = 30;
+const MIN_PROJECT_CONTENT_LENGTH = 100;
+const MIN_IMAGE_URL_LENGTH = 10;
+
 const ADMIN_USERNAME = "Emmanuel";
 const ADMIN_PASSWORD = "mypassword";
 
@@ -172,20 +192,64 @@ app.get("/guestbook-form", function (request, response) {
   response.render("guestbook-form.hbs");
 });
 
+function getValidationErrorsForGuestbook(name, comment) {
+  const validationErrors = [];
+
+  if (name.length <= MIN_NAME_LENGTH) {
+    validationErrors.push(
+      "Your name contains at least " + MIN_NAME_LENGTH + " characters."
+    );
+  }
+
+  if (name.length > MAX_NAME_LENGTH) {
+    validationErrors.push(
+      "Your name doesn't contain more than " + MAX_NAME_LENGTH + " characters."
+    );
+  }
+
+  if (comment.length <= MIN_COMMENT_LENGTH) {
+    validationErrors.push(
+      "Your comment contains at least " + MIN_COMMENT_LENGTH + " characters."
+    );
+  }
+
+  if (comment.length > MAX_COMMENT_LENGTH) {
+    validationErrors.push(
+      "Your comment does not contain more than " +
+        MAX_COMMENT_LENGTH +
+        " characters."
+    );
+  }
+
+  return validationErrors;
+}
+
 app.post("/guestbook-form", function (request, response) {
   const name = request.body.name;
   const comment = request.body.comment;
 
-  const query = `INSERT INTO guestbookEntries (name, comment, currentDateStamp) VALUES (?, ?, date())`;
-  const values = [name, comment];
+  const validationErrors = getValidationErrorsForGuestbook(name, comment);
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/guestbook");
-    }
-  });
+  if (validationErrors == 0) {
+    const query = `INSERT INTO guestbookEntries (name, comment, currentDateStamp) VALUES (?, ?, date())`;
+    const values = [name, comment];
+
+    db.run(query, values, function (error) {
+      if (error) {
+        response.redirect("/error");
+      } else {
+        response.redirect("/guestbook");
+      }
+    });
+  } else {
+    const model = {
+      validationErrors,
+      name,
+      comment,
+    };
+
+    response.render("guestbook-form.hbs", model);
+  }
 });
 
 app.get("/update-guestbook/:id", function (request, response) {
@@ -212,16 +276,31 @@ app.post("/update-guestbook/:id", function (request, response) {
   const newName = request.body.name;
   const newComment = request.body.comment;
 
-  const query = `UPDATE guestbookEntries SET name = ?, comment = ?, currentDateStamp = date() WHERE id = ?`;
-  const values = [newName, newComment, id];
+  const validationErrors = getValidationErrorsForGuestbook(newName, newComment);
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/update-guestbook/" + id);
-    }
-  });
+  if (validationErrors == 0) {
+    const query = `UPDATE guestbookEntries SET name = ?, comment = ?, currentDateStamp = date() WHERE id = ?`;
+    const values = [newName, newComment, id];
+
+    db.run(query, values, function (error) {
+      if (error) {
+        response.redirect("/error");
+      } else {
+        response.redirect("/guestbook");
+      }
+    });
+  } else {
+    const model = {
+      guestbookEntries: {
+        id,
+        name: newName,
+        comment: newComment,
+      },
+      validationErrors,
+    };
+
+    response.render("update-guestbook.hbs", model);
+  }
 });
 
 app.post("/delete-guestbookEntry/:id", function (request, response) {
@@ -243,22 +322,87 @@ app.get("/blogpost-form", function (request, response) {
   response.render("blogpost-form.hbs");
 });
 
+function getValidationErrorsForBlogpost(title, date, description, content) {
+  const validationErrors = [];
+
+  if (title.length <= MIN_TITLE_LENGTH) {
+    validationErrors.push(
+      "The title contains at least " + MIN_TITLE_LENGTH + " characters."
+    );
+  }
+
+  if (title.length > MAX_TITLE_LENGTH) {
+    validationErrors.push(
+      "Your title doesn't contain more than " +
+        MAX_TITLE_LENGTH +
+        " characters."
+    );
+  }
+
+  if (date.length <= MIN_DATE_LENGTH) {
+    validationErrors.push("You write a date ");
+  }
+
+  if (description.length <= MIN_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description contains at least " +
+        MIN_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (description.length > MAX_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description does not contain more than " +
+        MAX_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (content.length <= MIN_CONTENT_LENGTH) {
+    validationErrors.push(
+      "Your content contains at least " + MIN_CONTENT_LENGTH + " characters."
+    );
+  }
+
+  return validationErrors;
+}
+
 app.post("/blogpost-form", function (request, response) {
   const title = request.body.title;
   const date = request.body.date;
   const description = request.body.description;
   const content = request.body.content;
 
-  const query = `INSERT INTO blogposts (title, date, description, content) VALUES (?, ?, ?, ?)`;
-  const values = [title, date, description, content];
+  const validationErrors = getValidationErrorsForBlogpost(
+    title,
+    date,
+    description,
+    content
+  );
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/blog-users");
-    }
-  });
+  if (validationErrors == 0) {
+    const query = `INSERT INTO blogposts (title, date, description, content) VALUES (?, ?, ?, ?)`;
+    const values = [title, date, description, content];
+
+    db.run(query, values, function (error) {
+      if (error) {
+        response.redirect("/error");
+      } else {
+        response.redirect("/blog-users");
+      }
+    });
+  } else {
+    const model = {
+      validationErrors,
+      title,
+      date,
+      description,
+      content,
+    };
+
+    response.render("blogpost-form.hbs", model);
+  }
 });
 
 app.get("/update-blogpost/:id", function (request, response) {
@@ -287,16 +431,38 @@ app.post("/update-blogpost/:id", function (request, response) {
   const newContent = request.body.content;
   const newDescription = request.body.description;
 
-  const query = `UPDATE blogposts SET title = ?, date = ?, description = ?, content = ? WHERE id = ?`;
-  const values = [newTitle, newDate, newDescription, newContent, id];
+  const validationErrors = getValidationErrorsForBlogpost(
+    newTitle,
+    newDate,
+    newDescription,
+    newContent
+  );
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/update-blogpost/" + id);
-    }
-  });
+  if (validationErrors == 0) {
+    const query = `UPDATE blogposts SET title = ?, date = ?, description = ?, content = ? WHERE id = ?`;
+    const values = [newTitle, newDate, newDescription, newContent, id];
+
+    db.run(query, values, function (error) {
+      if (error) {
+        response.redirect("/error");
+      } else {
+        response.redirect("/update-blogpost/" + id);
+      }
+    });
+  } else {
+    const model = {
+      blogposts: {
+        id,
+        title: newTitle,
+        date: newDate,
+        description: newDescription,
+        content: newContent,
+      },
+      validationErrors,
+    };
+
+    response.render("update-blogpost.hbs", model);
+  }
 });
 
 app.post("/delete-blogpost/:id", function (request, response) {
@@ -322,6 +488,64 @@ app.get("/error", function (request, response) {
   response.render("error.hbs");
 });
 
+function getValidationErrorsForProject(
+  name,
+  date,
+  content,
+  description,
+  image
+) {
+  const validationErrors = [];
+
+  if (name.length <= MIN_PROJECT_TITLE_LENGTH) {
+    validationErrors.push(
+      "The title contains at least " + MIN_PROJECT_TITLE_LENGTH + " characters."
+    );
+  }
+
+  if (name.length > MAX_PROJECT_TITLE_LENGTH) {
+    validationErrors.push(
+      "Your title doesn't contain more than " +
+        MAX_PROJECT_TITLE_LENGTH +
+        " characters."
+    );
+  }
+
+  if (date.length <= MIN_DATE_LENGTH) {
+    validationErrors.push("You write a date ");
+  }
+
+  if (description.length <= MIN_PROJECT_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description contains at least " +
+        MIN_PROJECT_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (description.length > MAX_PROJECT_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description does not contain more than " +
+        MAX_PROJECT_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (content.length <= MIN_PROJECT_CONTENT_LENGTH) {
+    validationErrors.push(
+      "Your information about the project contains at least " +
+        MIN_PROJECT_CONTENT_LENGTH +
+        " characters."
+    );
+  }
+
+  if (image.length <= MIN_IMAGE_URL_LENGTH) {
+    validationErrors.push("You insert an image URL");
+  }
+
+  return validationErrors;
+}
+
 app.post("/projects-form", function (request, response) {
   const name = request.body.name;
   const date = request.body.date;
@@ -329,16 +553,37 @@ app.post("/projects-form", function (request, response) {
   const description = request.body.description;
   const image = request.body.image;
 
-  const query = `INSERT INTO projects (name, date, content, description, image) VALUES (?, ?, ?, ?, ?)`;
-  const values = [name, date, content, description, image];
+  const validationErrors = getValidationErrorsForProject(
+    name,
+    date,
+    content,
+    description,
+    image
+  );
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/projects-users");
-    }
-  });
+  if (validationErrors == 0) {
+    const query = `INSERT INTO projects (name, date, content, description, image) VALUES (?, ?, ?, ?, ?)`;
+    const values = [name, date, content, description, image];
+
+    db.run(query, values, function (error) {
+      if (error) {
+        response.redirect("/error");
+      } else {
+        response.redirect("/projects-users");
+      }
+    });
+  } else {
+    const model = {
+      validationErrors,
+      name,
+      date,
+      content,
+      description,
+      image,
+    };
+
+    response.render("projects-form.hbs", model);
+  }
 });
 
 app.get("/update-project/:id", function (request, response) {
@@ -368,16 +613,40 @@ app.post("/update-project/:id", function (request, response) {
   const newDescription = request.body.description;
   const newImage = request.body.image;
 
-  const query = `UPDATE projects SET name = ?, date = ?, content = ?, description = ?, image = ? WHERE id = ?`;
-  const values = [newName, newDate, newContent, newDescription, newImage, id];
+  const validationErrors = getValidationErrorsForProject(
+    newName,
+    newDate,
+    newContent,
+    newDescription,
+    newImage
+  );
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/update-project/" + id);
-    }
-  });
+  if (validationErrors == 0) {
+    const query = `UPDATE projects SET name = ?, date = ?, content = ?, description = ?, image = ? WHERE id = ?`;
+    const values = [newName, newDate, newContent, newDescription, newImage, id];
+
+    db.run(query, values, function (error) {
+      if (error) {
+        response.redirect("/error");
+      } else {
+        response.redirect("/update-project/" + id);
+      }
+    });
+  } else {
+    const model = {
+      project: {
+        id,
+        name: newName,
+        date: newDate,
+        content: newContent,
+        description: newDescription,
+        image: newImage,
+      },
+      validationErrors,
+    };
+
+    response.render("update-project.hbs", model);
+  }
 });
 
 app.post("/delete-projects/:id", function (request, response) {

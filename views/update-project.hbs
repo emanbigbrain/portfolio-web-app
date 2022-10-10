@@ -1,5 +1,13 @@
 <section class="sectionContainer">
   <h2>Update Projects</h2>
+  {{#if validationErrors.length}}
+    <p>Couldn't update the project. Make sure that...</p>
+    <ul>
+      {{#each validationErrors}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
   <form method="POST">
     <label class="form-label" for="input-name">Name of the project</label>
     <input

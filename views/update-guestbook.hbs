@@ -1,5 +1,13 @@
 <section class="sectionContainer">
   <h2>Update Your Guestbook Entry</h2>
+  {{#if validationErrors.length}}
+    <p>Couldn't update the guestbook entry. Make sure that...</p>
+    <ul>
+      {{#each validationErrors}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
   <form action="/update-guestbook/{{guestbookEntries.id}}" method="POST">
     <label class="form-label" for="input-name">Name</label>
     <input

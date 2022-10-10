@@ -1,5 +1,13 @@
 <section class="sectionContainer">
   <h2>Create Blog Post</h2>
+    {{#if validationErrors.length}}
+    <p>Couldn't create a blog post. Make sure that...</p>
+    <ul>
+      {{#each validationErrors}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
   <form action="/blogpost-form" method="POST">
     <label class="form-label" for="input-name">Title</label>
     <input
@@ -8,9 +16,10 @@
       id="input-name"
       placeholder="Blog title here"
       name="title"
+      value="{{title}}"
     />
     <label class="form-label" for="input-date">Date</label>
-    <input class="form-input" type="date" id="input-date" name="date">
+    <input class="form-input" type="date" id="input-date" name="date" value="{{date}}">
     <label class="form-label" for="input-text">Blog Post Text</label>
     <textarea
       class="form-input mb-2"
@@ -18,7 +27,7 @@
       placeholder="Start writing here."
       rows="10"
       name="content"
-    /></textarea>
+    />{{content}}</textarea>
     <label class="form-label" for="input-description">Short description</label>
     <textarea
       class="form-input mb-2"
@@ -26,7 +35,7 @@
       placeholder="Start writing here."
       rows="3"
       name="description"
-    /></textarea>
+    />{{description}}</textarea>
     <input class="btn btn-primary" type="submit" value="Submit">
   </form>
 </section>
