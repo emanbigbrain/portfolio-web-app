@@ -86,11 +86,15 @@ app.get("/projects-users", function (request, response) {
   const query = `SELECT  * FROM projects`;
 
   db.all(query, function (error, projects) {
-    const model = {
-      projects,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        projects,
+      };
 
-    response.render("projects-users.hbs", model);
+      response.render("projects-users.hbs", model);
+    }
   });
 });
 
@@ -101,11 +105,15 @@ app.get("/projects-users/:id", function (request, response) {
   const values = [id];
 
   db.get(query, values, function (error, projects) {
-    const model = {
-      projects,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        projects,
+      };
 
-    response.render("project.hbs", model);
+      response.render("project.hbs", model);
+    }
   });
 });
 
@@ -113,11 +121,15 @@ app.get("/blog-users", function (request, response) {
   const query = `SELECT  * FROM blogposts`;
 
   db.all(query, function (error, blogposts) {
-    const model = {
-      blogposts,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        blogposts,
+      };
 
-    response.render("blog-users.hbs", model);
+      response.render("blog-users.hbs", model);
+    }
   });
 });
 
@@ -128,11 +140,15 @@ app.get("/blog-users/:id", function (request, response) {
   const values = [id];
 
   db.get(query, values, function (error, blogposts) {
-    const model = {
-      blogposts,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        blogposts,
+      };
 
-    response.render("blogpost.hbs", model);
+      response.render("blogpost.hbs", model);
+    }
   });
 });
 
@@ -140,11 +156,15 @@ app.get("/guestbook", function (request, response) {
   const query = `SELECT  * FROM guestbookEntries`;
 
   db.all(query, function (error, guestbookEntries) {
-    const model = {
-      guestbookEntries,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        guestbookEntries,
+      };
 
-    response.render("guestbook.hbs", model);
+      response.render("guestbook.hbs", model);
+    }
   });
 });
 
@@ -160,7 +180,11 @@ app.post("/guestbook-form", function (request, response) {
   const values = [name, comment];
 
   db.run(query, values, function (error) {
-    response.redirect("/guestbook");
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/guestbook");
+    }
   });
 });
 
@@ -171,11 +195,15 @@ app.get("/update-guestbook/:id", function (request, response) {
   const values = [id];
 
   db.get(query, values, function (error, guestbookEntries) {
-    const model = {
-      guestbookEntries,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        guestbookEntries,
+      };
 
-    response.render("update-guestbook.hbs", model);
+      response.render("update-guestbook.hbs", model);
+    }
   });
 });
 
@@ -188,7 +216,11 @@ app.post("/update-guestbook/:id", function (request, response) {
   const values = [newName, newComment, id];
 
   db.run(query, values, function (error) {
-    response.redirect("/update-guestbook/" + id);
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/update-guestbook/" + id);
+    }
   });
 });
 
@@ -199,7 +231,11 @@ app.post("/delete-guestbookEntry/:id", function (request, response) {
   const values = [id];
 
   db.run(query, values, function (error) {
-    response.redirect("/guestbook");
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/guestbook");
+    }
   });
 });
 
@@ -217,7 +253,11 @@ app.post("/blogpost-form", function (request, response) {
   const values = [title, date, description, content];
 
   db.run(query, values, function (error) {
-    response.redirect("/blog-users");
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/blog-users");
+    }
   });
 });
 
@@ -228,11 +268,15 @@ app.get("/update-blogpost/:id", function (request, response) {
   const values = [id];
 
   db.get(query, values, function (error, blogposts) {
-    const model = {
-      blogposts,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        blogposts,
+      };
 
-    response.render("update-blogpost.hbs", model);
+      response.render("update-blogpost.hbs", model);
+    }
   });
 });
 
@@ -247,7 +291,11 @@ app.post("/update-blogpost/:id", function (request, response) {
   const values = [newTitle, newDate, newDescription, newContent, id];
 
   db.run(query, values, function (error) {
-    response.redirect("/update-blogpost/" + id);
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/update-blogpost/" + id);
+    }
   });
 });
 
@@ -258,12 +306,20 @@ app.post("/delete-blogpost/:id", function (request, response) {
   const values = [id];
 
   db.run(query, values, function (error) {
-    response.redirect("/blog-users");
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/blog-users");
+    }
   });
 });
 
 app.get("/projects-form", function (request, response) {
   response.render("projects-form.hbs");
+});
+
+app.get("/error", function (request, response) {
+  response.render("error.hbs");
 });
 
 app.post("/projects-form", function (request, response) {
@@ -277,7 +333,11 @@ app.post("/projects-form", function (request, response) {
   const values = [name, date, content, description, image];
 
   db.run(query, values, function (error) {
-    response.redirect("/projects-users");
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/projects-users");
+    }
   });
 });
 
@@ -288,11 +348,15 @@ app.get("/update-project/:id", function (request, response) {
   const values = [id];
 
   db.get(query, values, function (error, project) {
-    const model = {
-      project,
-    };
+    if (error) {
+      response.render("error.hbs");
+    } else {
+      const model = {
+        project,
+      };
 
-    response.render("update-project.hbs", model);
+      response.render("update-project.hbs", model);
+    }
   });
 });
 
@@ -308,7 +372,11 @@ app.post("/update-project/:id", function (request, response) {
   const values = [newName, newDate, newContent, newDescription, newImage, id];
 
   db.run(query, values, function (error) {
-    response.redirect("/update-project/" + id);
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/update-project/" + id);
+    }
   });
 });
 
@@ -319,7 +387,11 @@ app.post("/delete-projects/:id", function (request, response) {
   const values = [id];
 
   db.run(query, values, function (error) {
-    response.redirect("/projects-users");
+    if (error) {
+      response.redirect("/error");
+    } else {
+      response.redirect("/projects-users");
+    }
   });
 });
 
