@@ -1,16 +1,23 @@
 <section class="sectionContainer">
-  {{#if}}{{/if}}
-  <form action="/login" method="POST">
-
-    <div>
-      Username:
-      <input type="text" name="username" />
-    </div>
-    <div>
-      Password:
-      <input type="password" name="password" />
-    </div>
-    <input type="submit" value="Submit" />
-  </form>
-
+  <container class="loginContainer">
+    <div class="loginCard">
+      <h2 class="centerHeading"><strong>Login</strong></h2>
+    <form class="formFlex" action="/login" method="POST">
+      <label class="form-label selfAlign" for="username-input">Username</label>
+      <input
+        class="form-input inputFieldLength"
+        type="text"
+        name="username"
+        id="username-input"
+      />
+      <label class="form-label selfAlign mt-2" for="password-input">Password</label>
+      <input
+        class="form-input inputFieldLength"
+        type="password"
+        name="password"
+        id="password-input"
+      />
+      <input class="btn btn-primary mt-3" type="submit" value="Login" />
+    </form>
+  </container>
 </section>

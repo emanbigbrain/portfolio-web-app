@@ -2,11 +2,9 @@
   <h2>Update Blog Post</h2>
   {{#if validationErrors.length}}
     <p>Couldn't update the blog post. Make sure that...</p>
-    <ul>
-      {{#each validationErrors}}
-        <li>{{this}}</li>
-      {{/each}}
-    </ul>
+    {{#each validationErrors}}
+      <div class="toast toast-warning mb-2">{{this}}</div>
+    {{/each}}
   {{/if}}
   <form method="POST">
     <label class="form-label" for="input-name">Title</label>

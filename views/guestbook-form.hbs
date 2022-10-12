@@ -2,11 +2,9 @@
   <h2>Write Your Guestbook Entry</h2>
   {{#if validationErrors.length}}
     <p>Couldn't create a guestbook entry. Make sure that...</p>
-    <ul>
-      {{#each validationErrors}}
-        <li>{{this}}</li>
-      {{/each}}
-    </ul>
+    {{#each validationErrors}}
+      <div class="toast toast-warning mb-2">{{this}}</div>
+    {{/each}}
   {{/if}}
   <form action="/guestbook-form" method="POST">
     <label class="form-label" for="input-name">Name</label>

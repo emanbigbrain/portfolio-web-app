@@ -4,6 +4,8 @@ const expressSession = require("express-session");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3");
 
+// ===== Constant Variables for Error Handling =====
+
 const MIN_NAME_LENGTH = 2;
 const MIN_COMMENT_LENGTH = 4;
 const MAX_COMMENT_LENGTH = 50;
@@ -24,10 +26,7 @@ const MAX_PROJECT_DESCRIPTION_LENGTH = 30;
 const MIN_PROJECT_CONTENT_LENGTH = 100;
 const MIN_IMAGE_URL_LENGTH = 10;
 
-const ADMIN_USERNAME = "Emmanuel";
-const ADMIN_PASSWORD = "mypassword";
-
-//Database
+// ===== Database Tables for Projects, Blogposts & Guestbookentries =====
 
 const db = new sqlite3.Database("portfolio-database.db");
 
@@ -61,9 +60,12 @@ db.run(`
     )
 `);
 
+const ADMIN_USERNAME = "emmanueladmin";
+const ADMIN_PASSWORD = "iloveweb123";
+
 const app = express();
 
-//Middlewares
+// ===== Middlewares =====
 
 app.engine(
   "hbs",
@@ -88,7 +90,7 @@ app.use(
   })
 );
 
-//Request and Response
+// ===== Request and Response =====
 
 app.get("/", function (request, response) {
   response.render("homepage.hbs");
@@ -666,6 +668,11 @@ app.post("/delete-projects/:id", function (request, response) {
 
 app.get("/login", function (request, response) {
   response.render("login.hbs");
+});
+
+app.post("/login", function (request, response) {
+  const username = request.body.username;
+  const password = request.body.password;
 });
 
 let isLoggedIn = false;
