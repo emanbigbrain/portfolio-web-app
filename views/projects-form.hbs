@@ -1,4 +1,4 @@
-<section class="sectionContainer">
+<section class="sectionContainer mb-3">
   <h2>Create New Project</h2>
   {{#if errors.length}}
     <p>Couldn't create a project. Make sure that...</p>
@@ -36,6 +36,6 @@
     />{{description}}</textarea>
     <label class="form-label" for="input-imageurl">Image URL</label>
     <input class="form-input" type="text" id="input-imageurl" placeholder="Insert image URL here" name="image" value="{{image}}">
-    <input class="btn btn-primary" type="submit" value="Submit">
+    <input class="btn btn-primary mt-2" type="submit" value="Submit">
   </form>
 </section>

@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3");
 const SQLiteStore = require("connect-sqlite3")(expressSession);
 const bcrypt = require("bcrypt");
+
 // ===== Constant Variables for Error Handling =====
 
 const MIN_NAME_LENGTH = 2;
@@ -61,9 +62,13 @@ db.run(`
     )
 `);
 
+// ===== Hardcoded Login Details =====
+
 const ADMIN_USERNAME = "emmanueladmin";
 const ADMIN_PASSWORD =
   "$2b$10$IK0.vULHS8ZObY6zgZ58JuF0wmTHVqhhKK.23aOwOn2YNE6xXqN0m";
+
+// ===== Implementing Express =====
 
 const app = express();
 
@@ -93,6 +98,8 @@ app.use(
   })
 );
 
+// ===== Custom Middleware for Login Functionality =====
+
 app.use(function (request, response, next) {
   const isLoggedIn = request.session.isLoggedIn;
 
@@ -101,7 +108,7 @@ app.use(function (request, response, next) {
   next();
 });
 
-// ===== Request and Response =====
+// ===== Get Request for All Viewing Pages =====
 
 app.get("/", function (request, response) {
   response.render("homepage.hbs");
@@ -210,6 +217,66 @@ app.get("/guestbook-form", function (request, response) {
   response.render("guestbook-form.hbs");
 });
 
+// ===== Validation Error Functions =====
+
+function getValidationErrorsForProject(
+  name,
+  date,
+  content,
+  description,
+  image
+) {
+  const validationErrors = [];
+
+  if (name.length <= MIN_PROJECT_TITLE_LENGTH) {
+    validationErrors.push(
+      "The title contains at least " + MIN_PROJECT_TITLE_LENGTH + " characters."
+    );
+  }
+
+  if (name.length > MAX_PROJECT_TITLE_LENGTH) {
+    validationErrors.push(
+      "Your title doesn't contain more than " +
+        MAX_PROJECT_TITLE_LENGTH +
+        " characters."
+    );
+  }
+
+  if (date.length <= MIN_DATE_LENGTH) {
+    validationErrors.push("You write a date ");
+  }
+
+  if (description.length <= MIN_PROJECT_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description contains at least " +
+        MIN_PROJECT_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (description.length > MAX_PROJECT_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description does not contain more than " +
+        MAX_PROJECT_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (content.length <= MIN_PROJECT_CONTENT_LENGTH) {
+    validationErrors.push(
+      "Your information about the project contains at least " +
+        MIN_PROJECT_CONTENT_LENGTH +
+        " characters."
+    );
+  }
+
+  if (image.length <= MIN_IMAGE_URL_LENGTH) {
+    validationErrors.push("You insert an image URL");
+  }
+
+  return validationErrors;
+}
+
 function getValidationErrorsForGuestbook(name, comment) {
   const validationErrors = [];
 
@@ -241,6 +308,54 @@ function getValidationErrorsForGuestbook(name, comment) {
 
   return validationErrors;
 }
+
+function getValidationErrorsForBlogpost(title, date, description, content) {
+  const validationErrors = [];
+
+  if (title.length <= MIN_TITLE_LENGTH) {
+    validationErrors.push(
+      "The title contains at least " + MIN_TITLE_LENGTH + " characters."
+    );
+  }
+
+  if (title.length > MAX_TITLE_LENGTH) {
+    validationErrors.push(
+      "Your title doesn't contain more than " +
+        MAX_TITLE_LENGTH +
+        " characters."
+    );
+  }
+
+  if (date.length <= MIN_DATE_LENGTH) {
+    validationErrors.push("You write a date ");
+  }
+
+  if (description.length <= MIN_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description contains at least " +
+        MIN_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (description.length > MAX_DESCRIPTION_LENGTH) {
+    validationErrors.push(
+      "Your description does not contain more than " +
+        MAX_DESCRIPTION_LENGTH +
+        " characters."
+    );
+  }
+
+  if (content.length <= MIN_CONTENT_LENGTH) {
+    validationErrors.push(
+      "Your content contains at least " + MIN_CONTENT_LENGTH + " characters."
+    );
+  }
+
+  return validationErrors;
+}
+
+// ===== Post & Get Request - Guestbook Form Handling =====
 
 app.post("/guestbook-form", function (request, response) {
   const name = request.body.name;
@@ -352,6 +467,8 @@ app.post("/delete-guestbookEntry/:id", function (request, response) {
   }
 });
 
+// ===== Post & Get Request - Blogpost Form Handling =====
+
 app.get("/blogpost-form", function (request, response) {
   if (request.session.isLoggedIn) {
     response.render("blogpost-form.hbs");
@@ -359,52 +476,6 @@ app.get("/blogpost-form", function (request, response) {
     response.redirect("/login");
   }
 });
-
-function getValidationErrorsForBlogpost(title, date, description, content) {
-  const validationErrors = [];
-
-  if (title.length <= MIN_TITLE_LENGTH) {
-    validationErrors.push(
-      "The title contains at least " + MIN_TITLE_LENGTH + " characters."
-    );
-  }
-
-  if (title.length > MAX_TITLE_LENGTH) {
-    validationErrors.push(
-      "Your title doesn't contain more than " +
-        MAX_TITLE_LENGTH +
-        " characters."
-    );
-  }
-
-  if (date.length <= MIN_DATE_LENGTH) {
-    validationErrors.push("You write a date ");
-  }
-
-  if (description.length <= MIN_DESCRIPTION_LENGTH) {
-    validationErrors.push(
-      "Your description contains at least " +
-        MIN_DESCRIPTION_LENGTH +
-        " characters."
-    );
-  }
-
-  if (description.length > MAX_DESCRIPTION_LENGTH) {
-    validationErrors.push(
-      "Your description does not contain more than " +
-        MAX_DESCRIPTION_LENGTH +
-        " characters."
-    );
-  }
-
-  if (content.length <= MIN_CONTENT_LENGTH) {
-    validationErrors.push(
-      "Your content contains at least " + MIN_CONTENT_LENGTH + " characters."
-    );
-  }
-
-  return validationErrors;
-}
 
 app.post("/blogpost-form", function (request, response) {
   const title = request.body.title;
@@ -538,6 +609,8 @@ app.post("/delete-blogpost/:id", function (request, response) {
   }
 });
 
+// ===== Post & Get Request - Project Form Handling =====
+
 app.get("/projects-form", function (request, response) {
   if (request.session.isLoggedIn) {
     response.render("projects-form.hbs");
@@ -549,64 +622,6 @@ app.get("/projects-form", function (request, response) {
 app.get("/error", function (request, response) {
   response.render("error.hbs");
 });
-
-function getValidationErrorsForProject(
-  name,
-  date,
-  content,
-  description,
-  image
-) {
-  const validationErrors = [];
-
-  if (name.length <= MIN_PROJECT_TITLE_LENGTH) {
-    validationErrors.push(
-      "The title contains at least " + MIN_PROJECT_TITLE_LENGTH + " characters."
-    );
-  }
-
-  if (name.length > MAX_PROJECT_TITLE_LENGTH) {
-    validationErrors.push(
-      "Your title doesn't contain more than " +
-        MAX_PROJECT_TITLE_LENGTH +
-        " characters."
-    );
-  }
-
-  if (date.length <= MIN_DATE_LENGTH) {
-    validationErrors.push("You write a date ");
-  }
-
-  if (description.length <= MIN_PROJECT_DESCRIPTION_LENGTH) {
-    validationErrors.push(
-      "Your description contains at least " +
-        MIN_PROJECT_DESCRIPTION_LENGTH +
-        " characters."
-    );
-  }
-
-  if (description.length > MAX_PROJECT_DESCRIPTION_LENGTH) {
-    validationErrors.push(
-      "Your description does not contain more than " +
-        MAX_PROJECT_DESCRIPTION_LENGTH +
-        " characters."
-    );
-  }
-
-  if (content.length <= MIN_PROJECT_CONTENT_LENGTH) {
-    validationErrors.push(
-      "Your information about the project contains at least " +
-        MIN_PROJECT_CONTENT_LENGTH +
-        " characters."
-    );
-  }
-
-  if (image.length <= MIN_IMAGE_URL_LENGTH) {
-    validationErrors.push("You insert an image URL");
-  }
-
-  return validationErrors;
-}
 
 app.post("/projects-form", function (request, response) {
   const name = request.body.name;
@@ -746,7 +761,7 @@ app.post("/delete-projects/:id", function (request, response) {
   }
 });
 
-// ===== Login Functionality =====
+// ===== Login Functionality Implementation =====
 
 app.get("/login", function (request, response) {
   response.render("login.hbs");
