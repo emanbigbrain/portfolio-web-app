@@ -2,17 +2,10 @@
   {{#if blogposts}}
     {{#if isLoggedIn}}
       <div class="flex-buttons">
-        <form
-          class="mr-2"
-          action="/delete-blogpost/{{blogposts.id}}"
-          method="POST"
-        >
+        <form class="mr-2" action="/delete-blogpost/{{blogposts.id}}" method="POST">
           <input class="btn warningButton" type="submit" value="Delete" />
         </form>
-        <a
-          href="/update-blogpost/{{blogposts.id}}"
-          class="btn btn-primary"
-        >Update</a>
+        <a href="/update-blogpost/{{blogposts.id}}" class="btn btn-primary">Update</a>
       </div>
     {{/if}}
     <h2>{{blogposts.title}}</h2>

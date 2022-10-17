@@ -14,10 +14,7 @@
         </div>
         <div class="tile-action flex-buttons">
           {{#if ../isLoggedIn}}
-            <a
-              href="/update-guestbook/{{id}}"
-              class="btn btn-primary mr-2"
-            >Update</a>
+            <a href="/update-guestbook/{{id}}" class="btn btn-primary mr-2">Update</a>
             <form action="/delete-guestbookEntry/{{id}}" method="POST">
               <input class="btn warningButton" type="submit" value="Delete" />
             </form>

@@ -8,22 +8,9 @@
   {{/if}}
   <form action="/guestbook-form" method="POST">
     <label class="form-label" for="input-name">Name</label>
-    <input
-      class="form-input"
-      type="text"
-      id="input-name"
-      placeholder="Your name"
-      name="name"
-      value="{{name}}"
-    />
+    <input class="form-input" type="text" id="input-name" placeholder="Your name" name="name" value="{{name}}">
     <label class="form-label" for="input-comment">Comment</label>
-    <textarea
-      class="form-input mb-2"
-      id="input-name"
-      placeholder="Write a comment here"
-      name="comment"
-      value="{{comment}}"
-    /></textarea>
+    <textarea class="form-input mb-2" id="input-name" placeholder="Write a comment here" name="comment">{{comment}}</textarea>
     <input class="btn btn-primary" type="submit" value="Submit">
   </form>
 </section>

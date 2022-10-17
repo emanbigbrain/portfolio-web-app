@@ -2,17 +2,10 @@
   {{#if projects}}
     {{#if isLoggedIn}}
       <div class="flex-buttons">
-        <form
-          class="mr-2"
-          action="/delete-projects/{{projects.id}}"
-          method="POST"
-        >
+        <form class="mr-2" action="/delete-projects/{{projects.id}}" method="POST">
           <input class="btn warningButton" type="submit" value="Delete" />
         </form>
-        <a
-          href="/update-project/{{projects.id}}"
-          class="btn btn-primary"
-        >Update</a>
+        <a href="/update-project/{{projects.id}}" class="btn btn-primary">Update</a>
       </div>
     {{/if}}
     <h2>{{projects.name}}</h2>
