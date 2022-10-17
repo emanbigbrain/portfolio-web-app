@@ -1,8 +1,8 @@
 <section class="sectionContainer">
   <h2>Update Blog Post</h2>
-  {{#if validationErrors.length}}
+  {{#if errors.length}}
     <p>Couldn't update the blog post. Make sure that...</p>
-    {{#each validationErrors}}
+    {{#each errors}}
       <div class="toast toast-warning mb-2">{{this}}</div>
     {{/each}}
   {{/if}}

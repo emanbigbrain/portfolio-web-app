@@ -1,8 +1,10 @@
-<section class="sectionContainerProjects">
+<section class="sectionContainerProjects mb-3">
   <div class="topContainer">
     <h2>Projects</h2>
     <p>Here you can find all my project. Have fun browsing!</p>
-    <a href="projects-form" class="btn btn-primary">Create New Project</a>
+    {{#if isLoggedIn}}
+      <a href="projects-form" class="btn btn-primary">Create New Project</a>
+    {{/if}}
   </div>
   <container class="projectsGrid">
     {{#if projects.length}}

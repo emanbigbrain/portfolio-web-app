@@ -44,10 +44,18 @@
             <a href="/guestbook">Guestbook</a>
           </li>
         </ul>
-        <div class="flexContainer loginButton">
-          <a href="/login" class="btn">Log in</a>
-        </div>
-
+        {{#unless isLoggedIn}}
+          <div class="flexContainer loginButton">
+            <a href="/login" class="btn">Login</a>
+          </div>
+        {{/unless}}
+        {{#if isLoggedIn}}
+          <div class="flexContainer loginButton">
+            <form action="/logout" method="POST">
+              <input class="btn btn-primary" type="submit" value="Logout" />
+            </form>
+          </div>
+        {{/if}}
       </nav>
       <main class="Content">
         {{{body}}}

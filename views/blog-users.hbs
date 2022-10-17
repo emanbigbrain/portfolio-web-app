@@ -2,7 +2,9 @@
   <div class="topContainer">
     <h2>Blog</h2>
     <p>Ready to stay up to date? Take look through some of my blog posts!</p>
-    <a href="blogpost-form" class="btn btn-primary">Add Blog Post</a>
+    {{#if isLoggedIn}}
+      <a href="blogpost-form" class="btn btn-primary">Add Blog Post</a>
+    {{/if}}
   </div>
   {{#if blogposts.length}}
     {{#each blogposts}}

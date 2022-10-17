@@ -7,24 +7,21 @@
   {{#if guestbookEntries.length}}
     {{#each guestbookEntries}}
       <div class="tile">
-        <div class="tile-icon">
-          <div class="example-tile-icon">
-            <i class="icon icon-file centered"></i>
-          </div>
-        </div>
         <div class="tile-content">
           <p class="tile-title"><strong>{{name}}</strong></p>
           <p class="text-gray">{{currentDateStamp}}</p>
           <p class="tile-subtitle">{{comment}}</p>
         </div>
         <div class="tile-action flex-buttons">
-          <a
-            href="/update-guestbook/{{id}}"
-            class="btn btn-primary mr-2"
-          >Update</a>
-          <form action="/delete-guestbookEntry/{{id}}" method="POST">
-            <input class="btn warningButton" type="submit" value="Delete" />
-          </form>
+          {{#if ../isLoggedIn}}
+            <a
+              href="/update-guestbook/{{id}}"
+              class="btn btn-primary mr-2"
+            >Update</a>
+            <form action="/delete-guestbookEntry/{{id}}" method="POST">
+              <input class="btn warningButton" type="submit" value="Delete" />
+            </form>
+          {{/if}}
         </div>
       </div>
     {{/each}}

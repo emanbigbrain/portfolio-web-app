@@ -3,7 +3,8 @@ const expressHandlebars = require("express-handlebars");
 const expressSession = require("express-session");
 const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3");
-
+const SQLiteStore = require("connect-sqlite3")(expressSession);
+const bcrypt = require("bcrypt");
 // ===== Constant Variables for Error Handling =====
 
 const MIN_NAME_LENGTH = 2;
@@ -61,7 +62,8 @@ db.run(`
 `);
 
 const ADMIN_USERNAME = "emmanueladmin";
-const ADMIN_PASSWORD = "iloveweb123";
+const ADMIN_PASSWORD =
+  "$2b$10$IK0.vULHS8ZObY6zgZ58JuF0wmTHVqhhKK.23aOwOn2YNE6xXqN0m";
 
 const app = express();
 
@@ -84,11 +86,20 @@ app.use(
 
 app.use(
   expressSession({
-    saveUnitialized: false,
+    saveUninitialized: false,
     resave: false,
     secret: "jkjjoijiji",
+    store: new SQLiteStore(),
   })
 );
+
+app.use(function (request, response, next) {
+  const isLoggedIn = request.session.isLoggedIn;
+
+  response.locals.isLoggedIn = isLoggedIn;
+
+  next();
+});
 
 // ===== Request and Response =====
 
@@ -105,10 +116,11 @@ app.get("/contact", function (request, response) {
 });
 
 app.get("/projects-users", function (request, response) {
-  const query = `SELECT  * FROM projects`;
+  const query = `SELECT  * FROM projects ORDER BY id DESC`;
 
   db.all(query, function (error, projects) {
     if (error) {
+      console.log(error);
       response.render("error.hbs");
     } else {
       const model = {
@@ -128,6 +140,7 @@ app.get("/projects-users/:id", function (request, response) {
 
   db.get(query, values, function (error, projects) {
     if (error) {
+      console.log(error);
       response.render("error.hbs");
     } else {
       const model = {
@@ -140,10 +153,11 @@ app.get("/projects-users/:id", function (request, response) {
 });
 
 app.get("/blog-users", function (request, response) {
-  const query = `SELECT  * FROM blogposts`;
+  const query = `SELECT  * FROM blogposts ORDER BY id DESC`;
 
   db.all(query, function (error, blogposts) {
     if (error) {
+      console.log(error);
       response.render("error.hbs");
     } else {
       const model = {
@@ -163,6 +177,7 @@ app.get("/blog-users/:id", function (request, response) {
 
   db.get(query, values, function (error, blogposts) {
     if (error) {
+      console.log(error);
       response.render("error.hbs");
     } else {
       const model = {
@@ -175,10 +190,11 @@ app.get("/blog-users/:id", function (request, response) {
 });
 
 app.get("/guestbook", function (request, response) {
-  const query = `SELECT  * FROM guestbookEntries`;
+  const query = `SELECT  * FROM guestbookEntries ORDER BY id DESC`;
 
   db.all(query, function (error, guestbookEntries) {
     if (error) {
+      console.log(error);
       response.render("error.hbs");
     } else {
       const model = {
@@ -238,6 +254,7 @@ app.post("/guestbook-form", function (request, response) {
 
     db.run(query, values, function (error) {
       if (error) {
+        console.log(error);
         response.redirect("/error");
       } else {
         response.redirect("/guestbook");
@@ -255,22 +272,27 @@ app.post("/guestbook-form", function (request, response) {
 });
 
 app.get("/update-guestbook/:id", function (request, response) {
-  const id = request.params.id;
+  if (request.session.isLoggedIn) {
+    const id = request.params.id;
 
-  const query = `SELECT * FROM guestbookEntries WHERE id = ?`;
-  const values = [id];
+    const query = `SELECT * FROM guestbookEntries WHERE id = ?`;
+    const values = [id];
 
-  db.get(query, values, function (error, guestbookEntries) {
-    if (error) {
-      response.render("error.hbs");
-    } else {
-      const model = {
-        guestbookEntries,
-      };
+    db.get(query, values, function (error, guestbookEntries) {
+      if (error) {
+        console.log(error);
+        response.render("error.hbs");
+      } else {
+        const model = {
+          guestbookEntries,
+        };
 
-      response.render("update-guestbook.hbs", model);
-    }
-  });
+        response.render("update-guestbook.hbs", model);
+      }
+    });
+  } else {
+    response.redirect("/login");
+  }
 });
 
 app.post("/update-guestbook/:id", function (request, response) {
@@ -278,14 +300,19 @@ app.post("/update-guestbook/:id", function (request, response) {
   const newName = request.body.name;
   const newComment = request.body.comment;
 
-  const validationErrors = getValidationErrorsForGuestbook(newName, newComment);
+  const errors = getValidationErrorsForGuestbook(newName, newComment);
 
-  if (validationErrors == 0) {
+  if (!request.session.isLoggedIn) {
+    errors.push("You have to login.");
+  }
+
+  if (errors == 0) {
     const query = `UPDATE guestbookEntries SET name = ?, comment = ?, currentDateStamp = date() WHERE id = ?`;
     const values = [newName, newComment, id];
 
     db.run(query, values, function (error) {
       if (error) {
+        console.log(error);
         response.redirect("/error");
       } else {
         response.redirect("/guestbook");
@@ -298,7 +325,7 @@ app.post("/update-guestbook/:id", function (request, response) {
         name: newName,
         comment: newComment,
       },
-      validationErrors,
+      errors,
     };
 
     response.render("update-guestbook.hbs", model);
@@ -306,22 +333,31 @@ app.post("/update-guestbook/:id", function (request, response) {
 });
 
 app.post("/delete-guestbookEntry/:id", function (request, response) {
-  const id = request.params.id;
+  if (request.session.isLoggedIn) {
+    const id = request.params.id;
 
-  const query = `DELETE FROM guestbookEntries WHERE id = ?`;
-  const values = [id];
+    const query = `DELETE FROM guestbookEntries WHERE id = ?`;
+    const values = [id];
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/guestbook");
-    }
-  });
+    db.run(query, values, function (error) {
+      if (error) {
+        console.log(error);
+        response.redirect("/error");
+      } else {
+        response.redirect("/guestbook");
+      }
+    });
+  } else {
+    response.redirect("/login");
+  }
 });
 
 app.get("/blogpost-form", function (request, response) {
-  response.render("blogpost-form.hbs");
+  if (request.session.isLoggedIn) {
+    response.render("blogpost-form.hbs");
+  } else {
+    response.redirect("/login");
+  }
 });
 
 function getValidationErrorsForBlogpost(title, date, description, content) {
@@ -376,19 +412,24 @@ app.post("/blogpost-form", function (request, response) {
   const description = request.body.description;
   const content = request.body.content;
 
-  const validationErrors = getValidationErrorsForBlogpost(
+  const errors = getValidationErrorsForBlogpost(
     title,
     date,
     description,
     content
   );
 
-  if (validationErrors == 0) {
+  if (!request.session.isLoggedIn) {
+    errors.push("You have to login.");
+  }
+
+  if (errors == 0) {
     const query = `INSERT INTO blogposts (title, date, description, content) VALUES (?, ?, ?, ?)`;
     const values = [title, date, description, content];
 
     db.run(query, values, function (error) {
       if (error) {
+        console.log(error);
         response.redirect("/error");
       } else {
         response.redirect("/blog-users");
@@ -396,7 +437,7 @@ app.post("/blogpost-form", function (request, response) {
     });
   } else {
     const model = {
-      validationErrors,
+      errors,
       title,
       date,
       description,
@@ -408,22 +449,27 @@ app.post("/blogpost-form", function (request, response) {
 });
 
 app.get("/update-blogpost/:id", function (request, response) {
-  const id = request.params.id;
+  if (request.session.isLoggedIn) {
+    const id = request.params.id;
 
-  const query = `SELECT * FROM blogposts WHERE id = ?`;
-  const values = [id];
+    const query = `SELECT * FROM blogposts WHERE id = ?`;
+    const values = [id];
 
-  db.get(query, values, function (error, blogposts) {
-    if (error) {
-      response.render("error.hbs");
-    } else {
-      const model = {
-        blogposts,
-      };
+    db.get(query, values, function (error, blogposts) {
+      if (error) {
+        console.log(error);
+        response.render("error.hbs");
+      } else {
+        const model = {
+          blogposts,
+        };
 
-      response.render("update-blogpost.hbs", model);
-    }
-  });
+        response.render("update-blogpost.hbs", model);
+      }
+    });
+  } else {
+    response.redirect("/login");
+  }
 });
 
 app.post("/update-blogpost/:id", function (request, response) {
@@ -433,22 +479,27 @@ app.post("/update-blogpost/:id", function (request, response) {
   const newContent = request.body.content;
   const newDescription = request.body.description;
 
-  const validationErrors = getValidationErrorsForBlogpost(
+  const errors = getValidationErrorsForBlogpost(
     newTitle,
     newDate,
     newDescription,
     newContent
   );
 
-  if (validationErrors == 0) {
+  if (!request.session.isLoggedIn) {
+    errors.push("You have to login.");
+  }
+
+  if (errors == 0) {
     const query = `UPDATE blogposts SET title = ?, date = ?, description = ?, content = ? WHERE id = ?`;
     const values = [newTitle, newDate, newDescription, newContent, id];
 
     db.run(query, values, function (error) {
       if (error) {
+        console.log(error);
         response.redirect("/error");
       } else {
-        response.redirect("/update-blogpost/" + id);
+        response.redirect("/blog-users/" + id);
       }
     });
   } else {
@@ -460,7 +511,7 @@ app.post("/update-blogpost/:id", function (request, response) {
         description: newDescription,
         content: newContent,
       },
-      validationErrors,
+      errors,
     };
 
     response.render("update-blogpost.hbs", model);
@@ -468,22 +519,31 @@ app.post("/update-blogpost/:id", function (request, response) {
 });
 
 app.post("/delete-blogpost/:id", function (request, response) {
-  const id = request.params.id;
+  if (request.session.isLoggedIn) {
+    const id = request.params.id;
 
-  const query = `DELETE FROM blogposts WHERE id = ?`;
-  const values = [id];
+    const query = `DELETE FROM blogposts WHERE id = ?`;
+    const values = [id];
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/blog-users");
-    }
-  });
+    db.run(query, values, function (error) {
+      if (error) {
+        console.log(error);
+        response.redirect("/error");
+      } else {
+        response.redirect("/blog-users");
+      }
+    });
+  } else {
+    response.redirect("/login");
+  }
 });
 
 app.get("/projects-form", function (request, response) {
-  response.render("projects-form.hbs");
+  if (request.session.isLoggedIn) {
+    response.render("projects-form.hbs");
+  } else {
+    response.redirect("/login");
+  }
 });
 
 app.get("/error", function (request, response) {
@@ -555,7 +615,7 @@ app.post("/projects-form", function (request, response) {
   const description = request.body.description;
   const image = request.body.image;
 
-  const validationErrors = getValidationErrorsForProject(
+  const errors = getValidationErrorsForProject(
     name,
     date,
     content,
@@ -563,12 +623,17 @@ app.post("/projects-form", function (request, response) {
     image
   );
 
-  if (validationErrors == 0) {
+  if (!request.session.isLoggedIn) {
+    errors.push("You have to login");
+  }
+
+  if (errors == 0) {
     const query = `INSERT INTO projects (name, date, content, description, image) VALUES (?, ?, ?, ?, ?)`;
     const values = [name, date, content, description, image];
 
     db.run(query, values, function (error) {
       if (error) {
+        console.log(error);
         response.redirect("/error");
       } else {
         response.redirect("/projects-users");
@@ -576,7 +641,7 @@ app.post("/projects-form", function (request, response) {
     });
   } else {
     const model = {
-      validationErrors,
+      errors,
       name,
       date,
       content,
@@ -589,22 +654,27 @@ app.post("/projects-form", function (request, response) {
 });
 
 app.get("/update-project/:id", function (request, response) {
-  const id = request.params.id;
+  if (request.session.isLoggedIn) {
+    const id = request.params.id;
 
-  const query = `SELECT * FROM projects WHERE id = ?`;
-  const values = [id];
+    const query = `SELECT * FROM projects WHERE id = ?`;
+    const values = [id];
 
-  db.get(query, values, function (error, project) {
-    if (error) {
-      response.render("error.hbs");
-    } else {
-      const model = {
-        project,
-      };
+    db.get(query, values, function (error, project) {
+      if (error) {
+        console.log(error);
+        response.render("error.hbs");
+      } else {
+        const model = {
+          project,
+        };
 
-      response.render("update-project.hbs", model);
-    }
-  });
+        response.render("update-project.hbs", model);
+      }
+    });
+  } else {
+    response.redirect("/login");
+  }
 });
 
 app.post("/update-project/:id", function (request, response) {
@@ -615,7 +685,7 @@ app.post("/update-project/:id", function (request, response) {
   const newDescription = request.body.description;
   const newImage = request.body.image;
 
-  const validationErrors = getValidationErrorsForProject(
+  const errors = getValidationErrorsForProject(
     newName,
     newDate,
     newContent,
@@ -623,15 +693,20 @@ app.post("/update-project/:id", function (request, response) {
     newImage
   );
 
-  if (validationErrors == 0) {
+  if (!request.session.isLoggedIn) {
+    errors.push("You have to login");
+  }
+
+  if (errors == 0) {
     const query = `UPDATE projects SET name = ?, date = ?, content = ?, description = ?, image = ? WHERE id = ?`;
     const values = [newName, newDate, newContent, newDescription, newImage, id];
 
     db.run(query, values, function (error) {
       if (error) {
+        console.log(error);
         response.redirect("/error");
       } else {
-        response.redirect("/update-project/" + id);
+        response.redirect("/projects-users/" + id);
       }
     });
   } else {
@@ -644,7 +719,7 @@ app.post("/update-project/:id", function (request, response) {
         description: newDescription,
         image: newImage,
       },
-      validationErrors,
+      errors,
     };
 
     response.render("update-project.hbs", model);
@@ -652,36 +727,48 @@ app.post("/update-project/:id", function (request, response) {
 });
 
 app.post("/delete-projects/:id", function (request, response) {
-  const id = request.params.id;
+  if (request.session.isLoggedIn) {
+    const id = request.params.id;
 
-  const query = `DELETE FROM projects WHERE id = ?`;
-  const values = [id];
+    const query = `DELETE FROM projects WHERE id = ?`;
+    const values = [id];
 
-  db.run(query, values, function (error) {
-    if (error) {
-      response.redirect("/error");
-    } else {
-      response.redirect("/projects-users");
-    }
-  });
+    db.run(query, values, function (error) {
+      if (error) {
+        console.log(error);
+        response.redirect("/error");
+      } else {
+        response.redirect("/projects-users");
+      }
+    });
+  } else {
+    response.redirect("/login");
+  }
 });
+
+// ===== Login Functionality =====
 
 app.get("/login", function (request, response) {
   response.render("login.hbs");
 });
 
-app.post("/login", function (request, response) {
-  const username = request.body.username;
-  const password = request.body.password;
+app.get("/logout-notification", function (request, response) {
+  response.render("logout-notification.hbs");
 });
 
-let isLoggedIn = false;
+app.post("/logout", function (request, response) {
+  request.session.isLoggedIn = false;
+  response.redirect("/logout-notification");
+});
 
 app.post("/login", function (request, response) {
   const username = request.body.username;
   const password = request.body.password;
 
-  if (username == ADMIN_USERNAME && password == ADMIN_PASSWORD) {
+  if (
+    username == ADMIN_USERNAME &&
+    bcrypt.compareSync(password, ADMIN_PASSWORD)
+  ) {
     request.session.isLoggedIn = true;
     response.redirect("/");
   } else {

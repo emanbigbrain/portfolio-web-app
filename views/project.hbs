@@ -1,14 +1,27 @@
-<section class="sectionContainer mb-2">
-  <div class="flex-buttons">
-    <form class="mr-2" action="/delete-projects/{{projects.id}}" method="POST">
-      <input class="btn warningButton" type="submit" value="Delete" />
-    </form>
-    <a href="/update-project/{{projects.id}}" class="btn btn-primary">Update</a>
-  </div>
-  <h2>{{projects.name}}</h2>
-  <div class="imageContainer mb-2">
-    <img src={{projects.image}} alt="picture of lake" />
-  </div>
-  <aside class="mb-2"><strong>{{projects.date}}</strong></aside>
-  <p>{{projects.content}}</p>
+<section class="sectionContainer mb-3">
+  {{#if projects}}
+    {{#if isLoggedIn}}
+      <div class="flex-buttons">
+        <form
+          class="mr-2"
+          action="/delete-projects/{{projects.id}}"
+          method="POST"
+        >
+          <input class="btn warningButton" type="submit" value="Delete" />
+        </form>
+        <a
+          href="/update-project/{{projects.id}}"
+          class="btn btn-primary"
+        >Update</a>
+      </div>
+    {{/if}}
+    <h2>{{projects.name}}</h2>
+    <div class="imageContainer mb-2">
+      <img src={{projects.image}} alt="picture of lake" />
+    </div>
+    <aside class="mb-2"><strong>{{projects.date}}</strong></aside>
+    <p>{{projects.content}}</p>
+  {{else}}
+    <p>Sorry, this project does not exist anymore.</p>
+  {{/if}}
 </section>

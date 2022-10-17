@@ -1,14 +1,24 @@
-<section class="sectionContainer">
-  <div class="flex-buttons">
-    <form class="mr-2" action="/delete-blogpost/{{blogposts.id}}" method="POST">
-      <input class="btn warningButton" type="submit" value="Delete" />
-    </form>
-    <a
-      href="/update-blogpost/{{blogposts.id}}"
-      class="btn btn-primary"
-    >Update</a>
-  </div>
-  <h2>{{blogposts.title}}</h2>
-  <aside class="mb-2"><strong>{{blogposts.date}}</strong></aside>
-  <p>{{blogposts.content}}</p>
+<section class="sectionContainer mb-3">
+  {{#if blogposts}}
+    {{#if isLoggedIn}}
+      <div class="flex-buttons">
+        <form
+          class="mr-2"
+          action="/delete-blogpost/{{blogposts.id}}"
+          method="POST"
+        >
+          <input class="btn warningButton" type="submit" value="Delete" />
+        </form>
+        <a
+          href="/update-blogpost/{{blogposts.id}}"
+          class="btn btn-primary"
+        >Update</a>
+      </div>
+    {{/if}}
+    <h2>{{blogposts.title}}</h2>
+    <aside class="mb-2"><strong>{{blogposts.date}}</strong></aside>
+    <p>{{blogposts.content}}</p>
+  {{else}}
+    <p>Sorry, this blogpost does not exist anymore. </p>
+  {{/if}}
 </section>
