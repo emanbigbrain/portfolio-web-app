@@ -18,15 +18,15 @@ const MIN_DATE_LENGTH = 7;
 const MIN_TITLE_LENGTH = 4;
 const MAX_TITLE_LENGTH = 20;
 const MIN_DESCRIPTION_LENGTH = 10;
-const MAX_DESCRIPTION_LENGTH = 50;
+const MAX_DESCRIPTION_LENGTH = 30;
 const MIN_CONTENT_LENGTH = 100;
 
 const MIN_PROJECT_TITLE_LENGTH = 4;
 const MAX_PROJECT_TITLE_LENGTH = 20;
 const MIN_PROJECT_DESCRIPTION_LENGTH = 10;
-const MAX_PROJECT_DESCRIPTION_LENGTH = 50;
+const MAX_PROJECT_DESCRIPTION_LENGTH = 30;
 const MIN_PROJECT_CONTENT_LENGTH = 100;
-const MIN_IMAGE_URL_LENGTH = 10;
+const MIN_IMAGE_URL_LENGTH = 8;
 
 // ===== Database Tables for Projects, Blogposts & Guestbookentries =====
 
@@ -271,7 +271,10 @@ function getValidationErrorsForProject(
   }
 
   if (image.length <= MIN_IMAGE_URL_LENGTH) {
-    validationErrors.push("You insert an image URL");
+    validationErrors.push("Your image URL contains at least " + 
+      MIN_IMAGE_URL_LENGTH + 
+      " characters."
+    );
   }
 
   return validationErrors;

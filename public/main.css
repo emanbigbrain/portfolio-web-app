@@ -4,6 +4,7 @@
   --background-color: #fbfbfb;
   --white: #ffffff;
   --warning-color: #e34242;
+  --important-color: #5755D9;
 }
 
 body {
@@ -31,7 +32,7 @@ header {
   padding: 0;
 }
 
-.Header {
+.navHeader {
   grid-area: Header;
 }
 
@@ -197,4 +198,8 @@ header {
 
 .centerHeading {
   text-align: center;
+}
+
+.importantText {
+  color: var(--important-color);
 }
